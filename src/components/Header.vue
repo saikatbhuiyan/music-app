@@ -19,8 +19,7 @@
               <a class="px-2 text-white" href="#">Manage</a>
             </li>
             <li>
-              <a class="px-2 text-white" href="#"
-                @click.prevent="signout">Logout</a>
+              <a class="px-2 text-white" href="#" @click.prevent="signout">Logout</a>
             </li>
           </template>
         </ul>
@@ -30,19 +29,19 @@
 </template>
 
 <script>
-import { mapMutations, mapState, mapActions } from 'vuex';
+import { mapMutations, mapState, mapActions } from "vuex";
 
 export default {
-  name: 'Header',
+  name: "Header",
   computed: {
-    ...mapState(['userLoggedIn']),
+    ...mapState(["userLoggedIn"])
   },
   methods: {
-    ...mapMutations(['toggleAuthModal']),
-    ...mapActions(['signout']),
+    ...mapMutations(["toggleAuthModal"]),
+    ...mapActions(["signout"])
     // toggleAuthModal() {
     //   this.$store.commit('toggleAuthModal');
     // },
-  },
+  }
 };
 </script>
