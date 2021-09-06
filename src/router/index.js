@@ -6,22 +6,35 @@ import Manage from '@/views/Manage.vue';
 
 const routes = [
   {
+    name: 'home',
     path: '/',
     component: Home,
   },
   {
+    name: 'about',
     path: '/about',
     component: About,
   },
   {
-    path: '/manage',
+    name: 'manage',
+    // alias: '/manage', // alternative link
+    path: '/manage-music',
     component: Manage,
+  },
+  {
+    path: '/manage',
+    redirect: { name: 'manage' },
+  },
+  {
+    path: '/:catchAll(.*)*',
+    redirect: { name: 'home' },
   }
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  linkExactActiveClass: 'text-yellow-500',
 });
 
 export default router;
