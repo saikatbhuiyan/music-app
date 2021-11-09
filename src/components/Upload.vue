@@ -25,11 +25,13 @@
       <!-- Progess Bars -->
       <div class="mb-4" v-for="upload in uploads" :key="upload.name">
         <!-- File Name -->
-        <div class="font-bold text-sm">{{ upload.name }}</div>
+        <div class="font-bold text-sm" :class="upload.text_class">
+          <i class="upload.icon"></i> {{ upload.name }}
+        </div>
         <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
           <!-- Inner Progress Bar -->
           <div class="transition-all progress-bar bg-blue-400"
-            :class="'bg-blue-400'" 
+            :class="upload.variant " 
             :style="{ width: upload.current_progress + '%' }"></div>
         </div>
       </div>
@@ -38,7 +40,7 @@
 </template>
 
 <script>
-import { storage } from '@/includes/firebase';
+import { storage, auth } from '@/includes/firebase';
 
 export default {
   name: "Upload",
@@ -67,11 +69,22 @@ export default {
             task,
             current_progress: 0,
             name: file.name,
-          });
+            variant: 'bg-blue-400',
+            icon: 'fas fa-spinner fa-spin',
+            text_class: '',
+          }) -1;
 
           task.on('state_changed', (snapshort) => {
             const progress = (snapshort.bytesTransferred / snapshort.totalBytes) * 100;
             this.uploads[uploadIndex].current_progress = progress;
+          }, (error) => {
+            this.uploads[uploadIndex].variant = "bg-red-400";
+            this.uploads[uploadIndex].icon = "fas fa-times";
+            this.uploads[uploadIndex].text_class = "text-red-400";
+          }, async () => {
+            this.uploads[uploadIndex].variant = "bg-green-400";
+            this.uploads[uploadIndex].icon = "fas fa-check";
+            this.uploads[uploadIndex].text_class = "text-green-400";
           })
         })
     }
