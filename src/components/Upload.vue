@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { storage, auth } from '@/includes/firebase';
+import { storage, auth, songsCollection } from '@/includes/firebase';
 
 export default {
   name: "Upload",
@@ -74,14 +74,27 @@ export default {
             text_class: '',
           }) -1;
 
-          task.on('state_changed', (snapshort) => {
-            const progress = (snapshort.bytesTransferred / snapshort.totalBytes) * 100;
+          task.on('state_changed', (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             this.uploads[uploadIndex].current_progress = progress;
           }, (error) => {
+            console.log(error)
             this.uploads[uploadIndex].variant = "bg-red-400";
             this.uploads[uploadIndex].icon = "fas fa-times";
             this.uploads[uploadIndex].text_class = "text-red-400";
           }, async () => {
+            const song = {
+              uid: auth.currentUser.uid,
+              display_name: auth.currentUser.displayName,
+              original_name: task.snapshot.ref.name,
+              modified_name: task.snapshot.ref.name,
+              genre: '',
+              comment_count: 0,
+            }
+            
+            song.url = await task.snapshot.ref.getDownloadURL();  
+            await songsCollection.add(song)
+
             this.uploads[uploadIndex].variant = "bg-green-400";
             this.uploads[uploadIndex].icon = "fas fa-check";
             this.uploads[uploadIndex].text_class = "text-green-400";
@@ -91,3 +104,4 @@ export default {
   }
 };
 </script>
+ 
